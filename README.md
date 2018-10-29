@@ -49,7 +49,7 @@ If you use the AMD GPU:
 $ python3 pre_processing.py
 ```
 
-実行すると、`data/natsume.csv`、`data/akutagawa.csv`、`data/mori.csv`、`data/dazai.csv`が作成されます。このCSVファイルは51列あり、はじめの50列は50単語、最後の1列は正解ラベルです。
+実行すると、`data/natsume.csv`、`data/akutagawa.csv`、`data/mori.csv`、`data/dazai.csv`が作成されます。このCSVファイルは51列あり、はじめの50列には単語が1語ずつ、最後の1列には正解ラベルが書かれています。
 
 ### 辞書の作成
 各単語に固有のIDを振るための辞書を作ります。
@@ -67,20 +67,23 @@ $ python3 make_train_test_data.py
 ```
 
 実行すると、`data/all_data.csv`、`data/train.csv`、`data/test.csv`が作成されます。
-これらのCSVファイルは51列あり、はじめの50列は50単語のID、最後の1列は正解ラベルです。
-
+これらのCSVファイルは51列あり、はじめの50列の数字は各単語のID、最後の1列の数字は正解ラベルを意味しています。
+`data/train.csv`は60,000行、`data/test.csv`は10,000行あります。
 `data/train.csv`を用いて訓練、`data/test.csv`を用いて評価を行います。
 
 ### モデルの訓練
-`pred_author.ipynb`を参考にしてください。筆者は[Google Colab](https://colab.research.google.com/)で訓練を行いました。
+[`pred_author.ipynb`](https://github.com/9sako6/BungoClassifier/blob/master/pred_author.ipynb)を参考にしてください。モデルの訓練にはGPUが必要です。
+ちなみに、筆者は[Google Colab](https://colab.research.google.com/)で訓練を行いました。
+無料でGPUを使えるのでとてもよいです（2018/10/29現在）。
 
-- Google Colabを用いて訓練を行う場合は、`data/train.csv`、`data/test.csv`、`data/bungo_dict.txt`をGoogle Colabにアップロードする必要があります。
+- Google Colabを用いるためには、Googleアカウントが必要です。
 
-- 訓練が完了すると、`pre_trained_model.h5`が作成されます。これを`data`ディレクトリ内に保存します。このファイルは学習済みのモデルの重みを記録したものです。実行時にはこの重みを使い、推論を行います。
+- Google Colabを用いて訓練を行う場合は、`data/train.csv`、`data/test.csv`、`data/bungo_dict.txt`をGoogle Colab上にアップロードする必要があります。
+
+
+訓練が完了すると、`pre_trained_model.h5`が作成されます。これを`data`ディレクトリ内に保存します。このファイルは学習済みのモデルの重みを記録したものです。実行時にはこの重みを使い、推論を行います。
 
 ### ディレクトリ構造
-`data`ディレクトリに`pre_trained_mode.h5`を保存します。
-
 最終的に、以下のような構造になります。
 
 ```
@@ -109,6 +112,7 @@ $ python3 make_train_test_data.py
 
 `data`ディレクトリに`pre_trained_mode.h5`、`bungo_dict.txt`があることを確認してください。
 
+`main.py`を実行すれば冒頭のデモのように推論を行う事ができます。
 
 ```
 $ python3 main.py
