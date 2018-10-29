@@ -1,5 +1,4 @@
-import plaidml.keras            # for PlaidML (AMDのGPUを使用している場合に必要)
-plaidml.keras.install_backend() # for PlaidML (AMDのGPUを使用している場合に必要)
+# coding:utf-8
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Embedding
 from keras.layers import LSTM

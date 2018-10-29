@@ -26,32 +26,101 @@ If you use the AMD GPU:
 - Gensim
 - regex
 
-# How to Predict
+If you use the AMD GPU:
+- PlaidML
 
-```
-$ python3 main.py
-```
+
 
 # How to Train
-Comming soon...
+
 
 ## データセットの作成
-訓練を行う上で最も厄介なのがデータセット(`data/train.csv`, `data/test.csv`)の作成です。
-夏目漱石、芥川龍之介、森鴎外、太宰治の場合を例にしてその手順を説明します。
+夏目漱石、芥川龍之介、森鴎外、太宰治の場合を例にして、データセット作成手順を説明します。
 
 ### 作品のダウンロード
 - [青空文庫 作家別一括ダウンロード](http://keison.sakura.ne.jp/)
 
-上記のサイトから、夏目漱石、芥川龍之介、森鴎外、太宰治の作品をダウンロードします。
-ダウンロードしたzipファイルを解凍します。`data`ディレクトリを作成し、解凍したフォルダをそれぞれ`natsume`, `akutagawa`, `mori`, `dazai`という名前で保存します。
+上記のサイトから、夏目漱石、芥川龍之介、森鴎外、太宰治の作品をダウンロードし、解凍します。`data`ディレクトリを作成し、解凍したフォルダをそれぞれ`natsume`, `akutagawa`, `mori`, `dazai`という名前で保存します。
 
 ### テキストの前処理
+ルビ、注釈、ヘッダー、フッターや記号などを削除し、テキストを分かち書きにします。
 
 ```
 $ python3 pre_processing.py
 ```
 
-実行すると、`data/natsume.csv`、`data/akutagawa.csv`、`data/mori.csv`、`data/dazai.csv`が作成されます。
+実行すると、`data/natsume.csv`、`data/akutagawa.csv`、`data/mori.csv`、`data/dazai.csv`が作成されます。このCSVファイルは51列あり、はじめの50列は50単語、最後の1列は正解ラベルです。
+
+### 辞書の作成
+各単語に固有のIDを振るための辞書を作ります。
+
+```
+$ python3 make_dictionary.py
+```
+
+実行すると、`data/bungo_dict.txt`が作成されます。
+
+### 訓練データ＆テストデータの作成
+
+```
+$ python3 make_train_test_data.py
+```
+
+実行すると、`data/all_data.csv`、`data/train.csv`、`data/test.csv`が作成されます。
+これらのCSVファイルは51列あり、はじめの50列は50単語のID、最後の1列は正解ラベルです。
+
+`data/train.csv`を用いて訓練、`data/test.csv`を用いて評価を行います。
+
+### モデルの訓練
+`pred_author.ipynb`を参考にしてください。筆者は[Google Colab](https://colab.research.google.com/)で訓練を行いました。
+
+- Google Colabを用いて訓練を行う場合は、`data/train.csv`、`data/test.csv`、`data/bungo_dict.txt`をGoogle Colabにアップロードする必要があります。
+
+- 訓練が完了すると、`pre_trained_model.h5`が作成されます。これを`data`ディレクトリ内に保存します。このファイルは学習済みのモデルの重みを記録したものです。実行時にはこの重みを使い、推論を行います。
+
+### ディレクトリ構造
+`data`ディレクトリに`pre_trained_mode.h5`を保存します。
+
+最終的に、以下のような構造になります。
+
+```
+.
+├── README.md
+├── data
+│   ├── bungo_dict.txt
+│   ├── pre_trained_model.h5
+│   ├── natsume.csv
+│   ├── akutagawa.csv
+│   ├── mori.csv
+│   ├── dazai.csv
+│   ├── all_data.csv
+│   ├── test.csv
+│   └── train.csv
+├── main.py
+├── make_dictionary.py
+├── make_train_test_data.py
+├── pre_processing.py
+├── pred_author.ipynb
+└── samples
+    └── demo1.gif
+```
+
+# How to Predict
+
+`data`ディレクトリに`pre_trained_mode.h5`、`bungo_dict.txt`があることを確認してください。
+
+
+```
+$ python3 main.py
+```
+
+もしAMDのGPUを使っている場合は、`main.py`の先頭に以下の2行を加えてください。
+
+```
+import plaidml.keras            # for PlaidML (AMDのGPUを使用している場合に必要)
+plaidml.keras.install_backend() # for PlaidML (AMDのGPUを使用している場合に必要)
+```
+
 
 # 参考
 - [LSTMを使ってテキストの多クラス分類をする](https://blog.codingecho.com/2018/03/25/lstm%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E5%A4%9A%E3%82%AF%E3%83%A9%E3%82%B9%E5%88%86%E9%A1%9E%E3%82%92%E3%81%99%E3%82%8B/)
