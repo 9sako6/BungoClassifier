@@ -30,7 +30,29 @@ If you use the AMD GPU:
 If you use the AMD GPU:
 - PlaidML
 
+# How to Predict
 
+
+実行に必要なファイルは
+[こちら](https://drive.google.com/drive/folders/1fdCYkxeKj0u56W8wtB0DeUof0c0SntAV?usp=sharing)からダウンロードできます。
+
+`data`ディレクトリを作成し、上記のリンクからダウンロードできる`pre_trained_mode.h5`、`bungo_dict.txt`を保存してください。
+
+`main.py`を実行すれば冒頭のデモのように推論を行う事ができます。
+
+```
+$ python3 main.py
+```
+
+もしAMDのGPUを使っている場合は、`main.py`の先頭に以下の2行を加えてください。
+
+```
+import plaidml.keras            # for PlaidML (AMDのGPUを使用している場合に必要)
+plaidml.keras.install_backend() # for PlaidML (AMDのGPUを使用している場合に必要)
+```
+
+# Notes
+- 今回、入力は50単語であるとして訓練を行なったため、推論を行う際はなるべく50単語以上含まれるテキストを使った方が良い精度が出ます。
 
 # How to Train
 `青空文庫から作品をダウンロード`->`訓練データ＆テストデータの作成`->`モデルの訓練`
@@ -84,13 +106,6 @@ $ python3 make_train_test_data.py
 
 訓練が完了すると、`pre_trained_model.h5`が作成されます。これを`data`ディレクトリ内に保存します。このファイルは学習済みのモデルの重みを記録したものです。実行時にはこの重みを使い、推論を行います。
 
-
-### 結果
-
-![loss](./samples/loss.png)
-
-![loss](./samples/acc.png)
-
 ## ディレクトリ構造
 最終的に、以下のような構造になります。
 
@@ -115,25 +130,15 @@ $ python3 make_train_test_data.py
 └── samples
 ```
 
-# How to Predict
+### 結果
 
-`data`ディレクトリに`pre_trained_mode.h5`、`bungo_dict.txt`があることを確認してください。
+![loss](./samples/loss.png)
 
-`main.py`を実行すれば冒頭のデモのように推論を行う事ができます。
+![acc](./samples/acc.png)
 
-```
-$ python3 main.py
-```
 
-もしAMDのGPUを使っている場合は、`main.py`の先頭に以下の2行を加えてください。
 
-```
-import plaidml.keras            # for PlaidML (AMDのGPUを使用している場合に必要)
-plaidml.keras.install_backend() # for PlaidML (AMDのGPUを使用している場合に必要)
-```
 
-# Notes
-- 今回、入力は50単語であるとして訓練を行なったため、推論を行う際はなるべく50単語以上含まれるテキストを使った方が良い精度が出ます。
 
 # 参考
 - [LSTMを使ってテキストの多クラス分類をする](https://blog.codingecho.com/2018/03/25/lstm%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E5%A4%9A%E3%82%AF%E3%83%A9%E3%82%B9%E5%88%86%E9%A1%9E%E3%82%92%E3%81%99%E3%82%8B/)
