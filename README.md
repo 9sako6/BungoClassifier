@@ -71,7 +71,7 @@ $ python3 make_train_test_data.py
 `data/train.csv`は60,000行、`data/test.csv`は10,000行あります。
 `data/train.csv`を用いて訓練、`data/test.csv`を用いて評価を行います。
 
-### モデルの訓練
+## モデルの訓練
 [`pred_author.ipynb`](https://github.com/9sako6/BungoClassifier/blob/master/pred_author.ipynb)を参考にしてください。モデルの訓練にはGPUが必要です。
 ちなみに、筆者は[Google Colab](https://colab.research.google.com/)で訓練を行いました。
 無料でGPUを使えるのでとてもよいです（2018/10/29現在）。
@@ -83,7 +83,7 @@ $ python3 make_train_test_data.py
 
 訓練が完了すると、`pre_trained_model.h5`が作成されます。これを`data`ディレクトリ内に保存します。このファイルは学習済みのモデルの重みを記録したものです。実行時にはこの重みを使い、推論を行います。
 
-### ディレクトリ構造
+## ディレクトリ構造
 最終的に、以下のような構造になります。
 
 ```
@@ -125,6 +125,8 @@ import plaidml.keras            # for PlaidML (AMDのGPUを使用している場
 plaidml.keras.install_backend() # for PlaidML (AMDのGPUを使用している場合に必要)
 ```
 
+# Notes
+- 今回、入力は50単語であるとして訓練を行なったため、推論を行う際はなるべく50単語以上含まれるテキストを使った方が良い精度が出ます。
 
 # 参考
 - [LSTMを使ってテキストの多クラス分類をする](https://blog.codingecho.com/2018/03/25/lstm%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E5%A4%9A%E3%82%AF%E3%83%A9%E3%82%B9%E5%88%86%E9%A1%9E%E3%82%92%E3%81%99%E3%82%8B/)
