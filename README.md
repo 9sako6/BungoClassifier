@@ -113,7 +113,6 @@ $ python3 make_train_test_data.py
 ├── pre_processing.py
 ├── pred_author.ipynb
 └── samples
-    └── demo1.gif
 ```
 
 # How to Predict
