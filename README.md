@@ -51,7 +51,7 @@ import plaidml.keras            # for PlaidML (AMDのGPUを使用している場
 plaidml.keras.install_backend() # for PlaidML (AMDのGPUを使用している場合に必要)
 ```
 
-# Notes
+## Notes
 - 今回、入力は50単語であるとして訓練を行なったため、推論を行う際はなるべく50単語以上含まれるテキストを使った方が良い精度が出ます。
 
 # How to Train
@@ -131,13 +131,16 @@ $ python3 make_train_test_data.py
 ```
 
 ### 結果
+以下のような結果になりました。
 
 ![loss](./samples/loss.png)
 
 ![acc](./samples/acc.png)
 
 
+最終的に、validation accuracyは約93%となりました。
 
+テストデータにおける評価では正解率92.98%となりました。
 
 
 # 参考
