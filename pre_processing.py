@@ -53,28 +53,29 @@ def text2csv(text, author, column_size=50):
 
     return result_text
 
-authors = ['natsume', 'akutagawa', 'mori', 'dazai']
-for author in authors:
-    # ある作家のディレクトリ内のすべてのテキストファイル
-    text_files = glob.glob('./data/{}/*.txt'.format(author))
-    for text_file in text_files:
-        try:
-            # 文字コードをutf-8に変換
-            cmd = "nkf -w --overwrite {}".format(text_file)
-            subprocess.call(cmd, shell=True)
-            with open(text_file) as file:
-                text = file.read()
-                # テキスト前処理
-                text = clean_text(text)
-                # 形態素解析
-                tagger = MeCab.Tagger("-Owakati")
-                text = tagger.parse(text)
-                # 改行の削除
-                text = re.sub('\n', '', text)
-                # データセットの作成
-                text = text2csv(text, author)
-                # csvとして保存
-                with open('./data/{}.csv'.format(author), 'a') as savefile:
-                    savefile.write(text)
-        except (UnicodeDecodeError, IndexError):
-            pass
+if __name__ == '__main__':
+    authors = ['natsume', 'akutagawa', 'mori', 'dazai']
+    for author in authors:
+        # ある作家のディレクトリ内のすべてのテキストファイル
+        text_files = glob.glob('./data/{}/*.txt'.format(author))
+        for text_file in text_files:
+            try:
+                # 文字コードをutf-8に変換
+                cmd = "nkf -w --overwrite {}".format(text_file)
+                subprocess.call(cmd, shell=True)
+                with open(text_file) as file:
+                    text = file.read()
+                    # テキスト前処理
+                    text = clean_text(text)
+                    # 形態素解析
+                    tagger = MeCab.Tagger("-Owakati")
+                    text = tagger.parse(text)
+                    # 改行の削除
+                    text = re.sub('\n', '', text)
+                    # データセットの作成
+                    text = text2csv(text, author)
+                    # csvとして保存
+                    with open('./data/{}.csv'.format(author), 'a') as savefile:
+                        savefile.write(text)
+            except (UnicodeDecodeError, IndexError):
+                pass
