@@ -25,6 +25,7 @@ If you use the AMD GPU:
 - Keras
 - Gensim
 - regex
+- mecab-python3
 
 If you use the AMD GPU:
 - PlaidML
