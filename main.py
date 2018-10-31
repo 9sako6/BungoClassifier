@@ -1,4 +1,6 @@
 # coding:utf-8
+import plaidml.keras            # for PlaidML (AMDのGPUを使用している場合に必要)
+plaidml.keras.install_backend() # for PlaidML (AMDのGPUを使用している場合に必要)
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Embedding
 from keras.layers import LSTM
@@ -32,12 +34,16 @@ def vec2text(vec, dictionary):
     return ''.join(words_list)
 
 if __name__ == '__main__':
-    authors = ['夏目漱石', '芥川龍之介', '森鴎外', '太宰治']
+    import glob
+    
+    # 作家名を取得
+    authors = ['森鴎外', '小川未明', '岡本かの子', '与謝野晶子', '夏目漱石', '折口信夫', '太宰治', '泉鏡花', '芥川龍之介']
+    AUTHOR_NUM = len(authors)
     # 学習済みモデルの読み込み
     model = Sequential()
-    model.add(Embedding(90000, 300, input_length=50))
+    model.add(Embedding(110000, 512, input_length=50))
     model.add(LSTM(32))
-    model.add(Dense(4, activation='softmax'))
+    model.add(Dense(AUTHOR_NUM, activation='softmax'))
     model.load_weights('./data/pre_trained_model.h5')
     # 辞書の読み込み
     dictionary = corpora.Dictionary.load_from_text('./data/bungo_dict.txt').token2id

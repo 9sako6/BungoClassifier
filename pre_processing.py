@@ -2,7 +2,6 @@
 import subprocess
 import re
 import regex # 正規表現で漢字を扱うために必要
-import glob
 import MeCab
 import numpy as np
 
@@ -13,6 +12,7 @@ def clean_text(text):
     text = re.sub('［[^］]*］', '', text)
     text = re.sub('／＼', '々', text)
     text = re.sub('／″＼', '々', text)
+    text = re.sub('々+', '々', text)
     # ヘッダーの削除
     text = re.split('-{55}[\s\S\n]*-{55}', text)[1]
     # フッターの削除
@@ -33,7 +33,7 @@ def clean_text(text):
     text = re.sub('[\?]', '？', text)
     text = re.sub('[\!]', '！', text)
     # その他記号の削除
-    text = re.sub('[※＊×—,\.:：/&]', '', text)
+    text = re.sub('[※＊×—,\.:：/&□△◇☆><;\'〕│┌├└┘┬┤]', '', text)
 
     return text
 
@@ -54,10 +54,16 @@ def text2csv(text, author, column_size=50):
     return result_text
 
 if __name__ == '__main__':
-    authors = ['natsume', 'akutagawa', 'mori', 'dazai']
+    import glob
+    
+    # 作家名を取得
+    authors = [r.split('/')[-1] for r in glob.glob('./data/works/*')]
+    print(authors)
+
+    #authors = ['natsume', 'akutagawa', 'mori', 'dazai']
     for author in authors:
         # ある作家のディレクトリ内のすべてのテキストファイル
-        text_files = glob.glob('./data/{}/*.txt'.format(author))
+        text_files = glob.glob('./data/works/{}/*.txt'.format(author))
         for text_file in text_files:
             try:
                 # 文字コードをutf-8に変換
@@ -78,4 +84,4 @@ if __name__ == '__main__':
                     with open('./data/{}.csv'.format(author), 'a') as savefile:
                         savefile.write(text)
             except (UnicodeDecodeError, IndexError):
-                pass
+                print('Error')

@@ -12,14 +12,17 @@ def shuffle_detaset(data):
 
 
 if __name__ == '__main__':
-    authors = ['natsume', 'akutagawa', 'mori', 'dazai']
-    author_labels ={'natsume':0, 'akutagawa':1, 'mori':2, 'dazai':3}
+    import glob
+    
+    # 作家名を取得
+    authors = [r.split('/')[-1] for r in glob.glob('./data/works/*')]
 
     # 辞書の読み込み
     dictionary = corpora.Dictionary.load_from_text('./data/bungo_dict.txt').token2id
 
     all_data = [] # 全作家の文章を入れる配列
-    for author in authors:
+    for author_label, author in enumerate(authors):
+        print('{}...'.format(author))
         df = pd.read_csv('./data/{}.csv'.format(author))
         for row in df['words']:
             if len(row.split(' ')) != 50:
@@ -28,9 +31,8 @@ if __name__ == '__main__':
             for word in row.split(' '):
                 id_row = np.append(id_row, dictionary[word])
             # csvの最後の列を正解ラベルとする
-            id_row = np.append(id_row, author_labels[author])
+            id_row = np.append(id_row, author_label)
             all_data.append(id_row)
-            print(id_row)
 
     # データをランダムに入れ替える
     all_data = shuffle_detaset(all_data)
