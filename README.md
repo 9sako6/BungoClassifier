@@ -26,6 +26,7 @@ If you use the AMD GPU:
 - Gensim
 - regex
 - mecab-python3
+- tqdm
 
 If you use the AMD GPU:
 - PlaidML
@@ -69,6 +70,13 @@ plaidml.keras.install_backend() # for PlaidML (AMDのGPUを使用している場
 $ mkdir -p data/works
 ```
 
+青空文庫からダウンロードしたファイル名には空白が混じっていることがあります。
+[こちら](https://qiita.com/JeJeNeNo/items/49ff685332e8f8222de2)等を参考に、空白を他の文字に置き換えておいてください。
+
+```
+$ find ./data/works/*/ -depth -name "* *" -execdir rename 's/ /_/g' "{}" \;
+```
+
 ### テキストの前処理
 ルビ、注釈、ヘッダー、フッターや記号などを削除し、テキストを分かち書きにします。
 
@@ -95,7 +103,7 @@ $ python3 make_train_test_data.py
 
 実行すると、`data/all_data.csv`、`data/train.csv`、`data/test.csv`が作成されます。
 これらのCSVファイルは51列あり、はじめの50列の数字は各単語のID、最後の1列の数字は正解ラベルを意味しています。
-`data/train.csv`は60,000行、`data/test.csv`は10,000行あります。
+`data/train.csv`は90,000行、`data/test.csv`は10,000行あります。
 `data/train.csv`を用いて訓練、`data/test.csv`を用いて評価を行います。
 
 
@@ -151,9 +159,6 @@ kerasの`Embedding(mask_zero=True)`などを使えばゼロパディングして
 作品数は作家ごとにかなり異なっています。
 訓練データ、テストデータを作成する際はそこを考慮しませんでした。
 データの数を均等にして訓練すると精度が上がるかどうか検証したいです。
-
-## その他：UnicodeDecodeError
-`pre_processing.py`を実行すると、ちょこちょこエラーを吐きます。これはおそらく、作品名に含まれる空白等が原因で作品名をうまく読み込めていないからだと思います。
 
 # 参考
 - [LSTMを使ってテキストの多クラス分類をする](https://blog.codingecho.com/2018/03/25/lstm%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E5%A4%9A%E3%82%AF%E3%83%A9%E3%82%B9%E5%88%86%E9%A1%9E%E3%82%92%E3%81%99%E3%82%8B/)

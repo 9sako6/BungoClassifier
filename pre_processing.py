@@ -47,7 +47,7 @@ def text2csv(text, author, column_size=50):
         reshaped_list.append(words_list[i * column_size:(i+1) * column_size])
 
     # 教師データの作成
-    result_text = 'words,author\n'
+    result_text = ''
     for row in reshaped_list:
         result_text += ' '.join(row) + ',{}\n'.format(author)
 
@@ -55,20 +55,22 @@ def text2csv(text, author, column_size=50):
 
 if __name__ == '__main__':
     import glob
-    
+
     # 作家名を取得
     authors = [r.split('/')[-1] for r in glob.glob('./data/works/*')]
     print(authors)
 
-    #authors = ['natsume', 'akutagawa', 'mori', 'dazai']
     for author in authors:
         # ある作家のディレクトリ内のすべてのテキストファイル
         text_files = glob.glob('./data/works/{}/*.txt'.format(author))
+        works_csv = ''
+        print('{}...'.format(author))
         for text_file in text_files:
             try:
                 # 文字コードをutf-8に変換
                 cmd = "nkf -w --overwrite {}".format(text_file)
                 subprocess.call(cmd, shell=True)
+                print(text_file)
                 with open(text_file) as file:
                     text = file.read()
                     # テキスト前処理
@@ -80,8 +82,11 @@ if __name__ == '__main__':
                     text = re.sub('\n', '', text)
                     # データセットの作成
                     text = text2csv(text, author)
-                    # csvとして保存
-                    with open('./data/{}.csv'.format(author), 'a') as savefile:
-                        savefile.write(text)
+                    # 作家ごとのcsvファイルに追加
+                    works_csv += text
             except (UnicodeDecodeError, IndexError):
                 print('Error')
+        # csvとして保存
+        with open('./data/{}.csv'.format(author), 'w') as savefile:
+            savefile.write(works_csv)
+

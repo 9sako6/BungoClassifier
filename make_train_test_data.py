@@ -13,6 +13,10 @@ def shuffle_detaset(data):
 
 if __name__ == '__main__':
     import glob
+    from tqdm import tqdm
+
+    TRAIN_DATA_SIZE = 90000
+    TEST_DATA_SIZE = 10000
     
     # 作家名を取得
     authors = [r.split('/')[-1] for r in glob.glob('./data/works/*')]
@@ -23,8 +27,10 @@ if __name__ == '__main__':
     all_data = [] # 全作家の文章を入れる配列
     for author_label, author in enumerate(authors):
         print('{}...'.format(author))
+        # csvファイル読み込み
         df = pd.read_csv('./data/{}.csv'.format(author))
-        for row in df['words']:
+        df.columns = ['words', 'author']
+        for row in tqdm(df['words']):
             if len(row.split(' ')) != 50:
                 continue
             id_row = np.array([], dtype = 'int32')
@@ -42,13 +48,15 @@ if __name__ == '__main__':
         writer.writerows(all_data)
 
     # train data
-    train_data = all_data[:60000]
+    print('saving train.csv...')
+    train_data = all_data[:TRAIN_DATA_SIZE]
     with open('./data/train.csv', 'w') as file:
         writer = csv.writer(file, lineterminator='\n')
         writer.writerows(train_data)
 
     # test data
-    test_data = all_data[60000:70000]
+    print('saving test.csv...')
+    test_data = all_data[TRAIN_DATA_SIZE:TRAIN_DATA_SIZE + TEST_DATA_SIZE]
     with open('./data/test.csv', 'w') as file:
         writer = csv.writer(file, lineterminator='\n')
         writer.writerows(test_data)
